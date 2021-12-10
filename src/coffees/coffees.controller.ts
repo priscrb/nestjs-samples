@@ -19,6 +19,8 @@ import { Public } from '../common/decorators/public.decorator';
 import { ParseIntPipe } from '../common/pipes/parse-int.pipe';
 import { Protocol } from '../common/decorators/protocol.decorator';
 import { ApiResponse, ApiForbiddenResponse, ApiTags } from '@nestjs/swagger';
+import { Paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
+import { Coffee } from './entities/coffee.entity';
 
 @ApiTags('coffees') // this groups routes together when showing in swagger
 @Controller('coffees')
@@ -29,13 +31,18 @@ export class CoffeesController {
   // public sets metadata to say that this method is public and not private
   @Public()
   @Get()
-  async findAll(
-    @Protocol('https') protocol: string,
-    @Query() paginationQuery: PaginationQueryDto,
-  ) {
-    console.log(protocol);
-    return this.coffeesService.findAll(paginationQuery);
+  // async findAll(
+  //   @Protocol('https') protocol: string,
+  //   @Query() paginationQuery: PaginationQueryDto,
+  // ) {
+  //   console.log(protocol);
+  //   return this.coffeesService.findAll(paginationQuery);
+  // }
+
+  public findAll(@Paginate() query: PaginateQuery): Promise<Paginated<Coffee>> {
+    return this.coffeesService.findAll(query)
   }
+
 
   // only a pipe can be scoped to parameters
   // pipe is triggered before method is fully executed

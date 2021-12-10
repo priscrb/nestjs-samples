@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import { FilterOperator, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
 import { Coffee } from './entities/coffee.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Connection } from 'typeorm';
@@ -24,14 +25,29 @@ export class CoffeesService {
     // console.log(coffeesConfiguration.hi);
   }
 
-  findAll(paginationQuery: PaginationQueryDto) {
-    const { limit, offset } = paginationQuery;
-    return this.coffeeRepository.find({
-      relations: ['flavors'],
-      skip: offset,
-      take: limit,
-    });
+  // findAll(paginationQuery: PaginationQueryDto) {
+  //   const { limit, offset } = paginationQuery;
+  //   return this.coffeeRepository.find({
+  //     relations: ['flavors'],
+  //     skip: offset,
+  //     take: limit,
+  //   });
+  // }
+
+
+  public findAll(query: PaginateQuery): Promise<Paginated<Coffee>> {
+    return paginate(query, this.coffeeRepository, {
+      sortableColumns: ['id', 'name', 'brand'],
+      searchableColumns: ['name', 'brand'],
+      defaultSortBy: [['id', 'DESC']],
+      // where: { brand: 'nescafe' },
+      filterableColumns: {
+          name: [FilterOperator.EQ],
+          id: [FilterOperator.EQ],
+      },
+    })
   }
+
 
   async findOne(id: string) {
     const coffee = await this.coffeeRepository.findOne(id, {

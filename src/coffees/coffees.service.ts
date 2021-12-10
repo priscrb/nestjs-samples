@@ -40,6 +40,7 @@ export class CoffeesService {
       sortableColumns: ['id', 'name', 'brand'],
       searchableColumns: ['name', 'brand'],
       defaultSortBy: [['id', 'DESC']],
+      // where: {brand: 'nescafe'},
       filterableColumns: {
           name: [FilterOperator.EQ],
           id: [FilterOperator.EQ],

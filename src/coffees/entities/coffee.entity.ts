@@ -19,6 +19,15 @@ export class Coffee {
   @Column()
   brand: string;
 
+  @Column()
+  qty: number;
+
+  @Column()
+  soldOut: boolean;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  launchDate: Date | null;
+
   @Column({ default: 0 })
   recommendations: number;
 
